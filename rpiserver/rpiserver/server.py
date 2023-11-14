@@ -64,6 +64,10 @@ def shutdown():
     valve.close()
     led1.off()
     led2.off()
+    
+@api.get("/valves/status")
+def valve_status():
+    return {"is_open": valve.is_open}
 
 @api.get("/valves/open")
 def open_valve():
