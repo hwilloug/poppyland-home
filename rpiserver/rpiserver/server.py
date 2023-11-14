@@ -1,3 +1,4 @@
+from starlette.responses import HTMLResponse
 from fastapi import FastAPI
 from pydantic import BaseModel
 import RPi.GPIO as GPIO
@@ -80,3 +81,31 @@ def close_valve():
     valve.close()
     led2.off()
     return valve
+
+
+app = FastAPI()
+
+@app.get("/")
+def root():
+  return generate_html_response()
+
+def generate_html_response() -> HTMLResponse:
+  state = "opened" if valve.is_open else "closed"
+  html_content = f"""
+  <html>
+    <head>
+      <title>Poppyland Raincloud</title>
+    </head>
+    <body>
+      <div>
+        <h2>Raincloud Status<h2>
+        <p>{state}</p>
+      </div>
+      <div>
+        <button onclick="location.href='/valves/open'" type="button">OPEN</button>
+        <button onclick="location.href='/valves/close'" type="button">CLOSE</button>
+      </div>
+    </body>
+  </html>
+  """
+  return HTMLResponse(content=html_content, status_code=200)
