@@ -1,7 +1,8 @@
+<!DOCTYPE html>
 <html>
 <head>
   <title>Poppyland Raincloud</title>
-  <link href="{{ url_for('static', path='style.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', path='style.css') }}" rel="stylesheet" />
 </head>
 <body>
   <div id="header">
@@ -16,6 +17,14 @@
     <div id="controls">
       <button onclick="location.href='/api/valves/open'" type="button" class="control-button"><h3>OPEN</h3></button>
       <button onclick="location.href='/api/valves/close'" type="button" class="control-button" style="background-color: green;"><h3>CLOSE</h3></button>
+    </div>
+    <div id="weather">
+      <h2>Current Weather</h2>
+      <div id="weather-container">
+          <img src="{{ weather_data.condition.icon }}" />
+          <p>{{ weather_data.condition.text }}</p>
+          <p>{{ weather_data.temp_f }}°F</p>
+      </div>
     </div>
   </div>
  </body>

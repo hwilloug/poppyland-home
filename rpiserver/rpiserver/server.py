@@ -1,5 +1,6 @@
 from starlette.responses import HTMLResponse
 from fastapi import FastAPI, Request
+import requests
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import RPi.GPIO as GPIO
@@ -93,13 +94,9 @@ templates = Jinja2Templates(directory="templates")
 
 @api.get("/")
 def root(request: Request):
-  return templates.TemplateResponse("index.html", {"request": request, "valve_state": valve})
-
-def generate_html_root_response() -> HTMLResponse:
-  state = "opened" if valve.is_open else "closed"
-  state_color = "blue" if valve.is_open else "green"
-  time_in_state = datetime.now() - valve.last_changed
-  return HTMLResponse(content=html_content, status_code=200)
+    response = requests.get(f"https://api.weatherapi.com/v1/forecast.json?q=29715&days=1&key=d25c5b1c56f648249a6222139231411")
+    weather_data = response.json().get("current", {})
+    return templates.TemplateResponse("index.html", {"request": request, "valve_state": valve, "weather_data": weather_data})
 
 def generate_html_redirect_response() -> HTMLResponse:
     html_content = f"""

@@ -5,6 +5,10 @@ html {
 }
 
 #header {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
     background-color: white;
     color: black;
     padding: 20px;
@@ -25,6 +29,9 @@ html {
     border: 1px solid lightgrey; 
     box-shadow: 10px 10px slategrey;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #controls {
@@ -42,4 +49,24 @@ html {
     background-color: blue; 
     color: white;
     border-radius: 50px;
+}
+
+#weather {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    box-shadow: 10px 10px slategrey;
+}
+
+#weather-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#weather-container p {
+    margin: 0px;
+    padding: 0px;
+    margin-top: 5px;
 }
