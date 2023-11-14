@@ -74,22 +74,19 @@ def valve_status():
 def open_valve():
     valve.open()
     led2.on()
-    return valve
+    return generate_html_redirect_response()
 
 @api.get("/valves/close")
 def close_valve():
     valve.close()
     led2.off()
-    return valve
+    return generate_html_redirect_response()
 
-
-app = FastAPI()
-
-@app.get("/")
+@api.get("/")
 def root():
-  return generate_html_response()
+  return generate_html_root_response()
 
-def generate_html_response() -> HTMLResponse:
+def generate_html_root_response() -> HTMLResponse:
   state = "opened" if valve.is_open else "closed"
   html_content = f"""
   <html>
@@ -102,10 +99,23 @@ def generate_html_response() -> HTMLResponse:
         <p>{state}</p>
       </div>
       <div>
-        <button onclick="location.href='/valves/open'" type="button">OPEN</button>
-        <button onclick="location.href='/valves/close'" type="button">CLOSE</button>
+        <button onclick="location.href='/api/valves/open'" type="button">OPEN</button>
+        <button onclick="location.href='/api/valves/close'" type="button">CLOSE</button>
       </div>
     </body>
   </html>
   """
   return HTMLResponse(content=html_content, status_code=200)
+
+def generate_html_redirect_response() -> HTMLResponse:
+    html_content = f"""
+    <html>
+      <head>
+        <meta http-equiv="refresh" content="1; url='/api'" />
+      </head>
+      <body>
+          <p>Processing...</p>
+      </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content, status_code=200)
