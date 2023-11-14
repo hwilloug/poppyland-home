@@ -1,8 +1,10 @@
 from starlette.responses import HTMLResponse
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import RPi.GPIO as GPIO
 from datetime import datetime
+from fastapi.templating import Jinja2Templates
 
 
 GPIO.setmode(GPIO.BCM)
@@ -57,6 +59,7 @@ led1 = LED(gpio=22).init()
 led2 = LED(gpio=27).init()
 
 api = FastAPI()
+api.mount("/static", StaticFiles(directory="static"), name="static")
 
 @api.on_event("startup")
 def startup():
@@ -86,37 +89,16 @@ def close_valve():
     led2.off()
     return generate_html_redirect_response()
 
+templates = Jinja2Templates(directory="templates")
+
 @api.get("/")
-def root():
-  return generate_html_root_response()
+def root(request: Request):
+  return templates.TemplateResponse("index.html", {"request": request, "valve_state": valve})
 
 def generate_html_root_response() -> HTMLResponse:
   state = "opened" if valve.is_open else "closed"
   state_color = "blue" if valve.is_open else "green"
   time_in_state = datetime.now() - valve.last_changed
-  html_content = f"""
-  <html style="background-color: dodgerblue; color: white;">
-    <head>
-      <title>Poppyland Raincloud</title>
-    </head>
-    <body>
-      <div id="header">
-        <h1>Poppyland Raincloud</h1>
-      </div>
-      <div id="tile-container" style="display: flex; flex-direction: row; gap: 50px;">
-        <div id="status" style="background-color: white; color: black; border: 1px solid lightgrey; padding: 20px;">
-          <h2>Raincloud Status<h2>
-          <p style="color: {state_color}">{state}</p>
-          <p>Time in this state: {time_in_state}</p>
-        </div>
-        <div id="controls" style="background-color: white; color: black;">
-          <button onclick="location.href='/api/valves/open'" type="button" style="padding: 50px; background-color: blue; color: white; border-radius: 50px;">OPEN</button>
-          <button onclick="location.href='/api/valves/close'" type="button" style="padding: 50px; background-color: green; color: white; border-radius: 50px;">CLOSE</button>
-        </div>
-      </div>
-    </body>
-  </html>
-  """
   return HTMLResponse(content=html_content, status_code=200)
 
 def generate_html_redirect_response() -> HTMLResponse:
