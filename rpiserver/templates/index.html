@@ -39,6 +39,15 @@ html {
     align-items: center;
 }
 
+#status-time-table {
+    margin: 0px auto;
+}
+
+#status-time-table td {
+    padding: 0px 10px;
+    text-align: center;
+}
+
 #controls {
     display: flex;
     flex-direction: row;
@@ -72,6 +81,16 @@ html {
 #forecast {
 }
 
+.warning {
+    color: red;
+}
+
+#frost {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 #astronomy {
     display: flex;
     flex-direction: column;
@@ -82,6 +101,18 @@ html {
 #log-block {
     margin-top: 50px;
 }
+
+#log-block table {
+    width: 100%;
+}
+
+#log-block td, th {
+    padding: 10px;
+}
+
+#log-block tr:nth-child(even) {
+    background-color: lightgrey;
+}
 </style>
 <body>
   <div id="header" class="tile">
@@ -90,15 +121,27 @@ html {
   </div>
   <div id="tile-container">
     <div id="status" class="tile">
-      <h2>Raincloud Status<h2>
-      <p style="color: {{ "blue" if valve_state.is_open else "green"}}">{{ "OPEN" if valve_state.is_open else "closed"}}</p>
+      <h2>Raincloud Status</h2>
+      <img src="{{ "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f327.svg" if valve_state.is_open else "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f324.svg" }}" />
     </div>
     <div id="controls" class="tile">
       <button onclick="location.href='/home/valves/open'" type="button" class="control-button"><h3>OPEN</h3></button>
       <button onclick="location.href='/home/valves/close'" type="button" class="control-button" style="background-color: green;"><h3>CLOSE</h3></button>
     </div>
-    <div id="">
-        
+    <div id="status_time" class="tile">
+        <h2>Time in current status</h2>
+        <table id="status-time-table">
+            <tr>
+                <td>{{ time_in_state.hours }}</td>
+                <td>{{ time_in_state.minutes }}</td>
+                <td>{{ time_in_state.seconds }}</td>
+            <tr>
+            <tr>
+                <td>hours</td>
+                <td>minutes</td>
+                <td>seconds</td>
+            </tr>
+        </table>
     </div>
     <div id="current-weather" class="tile">
       <h2>Current Weather</h2>
@@ -126,25 +169,42 @@ html {
         <p>Chance of rain: {{ weather_data.forecast.forecastday.1.day.daily_chance_of_rain }}% ({{ weather_data.forecast.forecastday.1.day.totalprecip_in }} in.)</p>
       </div>
     </div>
+    <div id="frost" class="tile">
+        <h2>Freeze Temperatures</h2>
+        {% if weather_data.forecast.forecastday.1.day.mintemp_f <= 32 and weather_data.forecast.forecastday.1.day.mintemp_f > 29 %}
+        <div class="warning">Light freeze warning</div>
+        {% endif %}
+        {% if weather_data.forecast.forecastday.1.day.mintemp_f <= 29 and weather_data.forecast.forecastday.1.day.mintemp_f > 25 %}
+        <div class="warning">Moderate freeze warning</div>
+        {% endif %}
+        {% if weather_data.forecast.forecastday.1.day.mintemp_f <= 25 %}
+        <div class="warning">Severe freeze warning</div>
+        {% endif %}
+        <div><b>Light freeze:</b> 29° - 32°F</div>
+        <div><b>Moderate freeze:</b> 25° - 28°F</div>
+        <div><b>Severe freeze:</b> 24°F and colder</div>
+    </div>
     <div id="astronomy" class="tile">
         <h2>Moon Phase</h2>
         <img src="{{ moon_image }}" />
         <div>{{ astro_data.astronomy.astro.moon_phase }}</div>
         <div>{{ astro_data.astronomy.astro.moon_illumination }}% illumination</div>
     </div>
-    <div id="frost" class="tile">
-        <h2>Freeze Temperatures</h2>
-        <div><b>Light freeze:</b> 29° - 32°F</div>
-        <div><b>Moderate freeze:</b> 25° - 28°F</div>
-        <div><b>Severe freeze:</b> 24°F and colder</div>
-    </div>
   </div>
   <div id="log-block" class="tile">
       <h2>Logs</h2>
-      {% for log in logs %}
-      <p style="padding: 10px;">{{log.datetime}} - {{log.message}}</p>
-      <hr />
-      {% endfor %}
+      <table>
+          <tr>
+              <th>Datetime</th>
+              <th>Message</th>
+          </tr>
+          {% for log in logs %}
+          <tr>
+              <td style="width: 250px;">{{log.datetime.strftime("%c")}}</td>
+              <td>{{log.message}}</td>
+          </tr>
+          {% endfor %}
+      </table>
   </div>
  </body>
 </html>

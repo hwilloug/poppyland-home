@@ -119,7 +119,21 @@ def root(request: Request):
     elif moon_phase == "Waning Crescent":
         moon_image = "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f318.svg"
     logs = get_logs()
-    return templates.TemplateResponse("index.html", {"request": request, "valve_state": valve, "weather_data": weather_data, "astro_data": astro_data, "moon_image": moon_image, "logs": logs})
+    time_in_state_split = str(datetime.now() - valve.last_changed).split(':')
+    time_in_state = {
+            "hours": time_in_state_split[0],
+            "minutes": time_in_state_split[1],
+            "seconds": time_in_state_split[2].split('.')[0]
+        }
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "valve_state": valve,
+        "time_in_state": time_in_state,
+        "weather_data": weather_data,
+        "astro_data": astro_data,
+        "moon_image": moon_image,
+        "logs": logs
+    })
 
 def generate_html_redirect_response() -> HTMLResponse:
     html_content = f"""
@@ -139,13 +153,13 @@ def write_log(message: str) -> None:
         writer =csv.writer(csvfile, delimiter=",")
         writer.writerow([datetime.now(), message])
 
-def get_logs() -> list({"datetime": str, "message": str}):
+def get_logs() -> list({"datetime": datetime, "message": str}):
     with open('log.csv', newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         logs = []
         for row in reader:
             logs.append({
-                "datetime": row[0],
+                "datetime": datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S.%f'),
                 "message": row[1]
             })
         logs.reverse()
