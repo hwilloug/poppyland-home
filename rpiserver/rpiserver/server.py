@@ -65,12 +65,14 @@ api.mount("/static", StaticFiles(directory="static"), name="static")
 
 @api.on_event("startup")
 def startup():
+    write_log("Starting up...")
     valve.close()
     led1.on()
     led2.off()
 
 @api.on_event("shutdown")
 def shutdown():
+    write_log("Shutting down...")
     valve.close()
     led1.off()
     led2.off()
@@ -97,8 +99,27 @@ templates = Jinja2Templates(directory="templates")
 def root(request: Request):
     response = requests.get(f"https://api.weatherapi.com/v1/forecast.json?q=29715&days=2&key=d25c5b1c56f648249a6222139231411")
     weather_data = response.json()
+    response = requests.get(f"https://api.weatherapi.com/v1/astronomy.json?q=29715&dt={datetime.today().strftime('%Y-%m-%d')}&key=d25c5b1c56f648249a6222139231411")
+    astro_data = response.json()
+    moon_phase = astro_data.get("astronomy", {}).get("astro", {}).get("moon_phase")
+    if moon_phase == "New Moon":
+        moon_image = "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f311.svg"
+    elif moon_phase == "Waxing Crescent":
+        moon_image = "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f312.svg"
+    elif moon_phase == "First Quarter":
+        moon_image = "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f313.svg"
+    elif moon_phase == "Waxing Gibbous":
+        moon_image = "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f314.svg"
+    elif moon_phase == "Full Moon":
+        moon_image = "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f315.svg"
+    elif moon_phase == "Waning Gibbous":
+        moon_image = "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f316.svg"
+    elif moon_phase == "Last Quarter":
+        moon_image = "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f317.svg"
+    elif moon_phase == "Waning Crescent":
+        moon_image = "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f318.svg"
     logs = get_logs()
-    return templates.TemplateResponse("index.html", {"request": request, "valve_state": valve, "weather_data": weather_data, "logs": logs})
+    return templates.TemplateResponse("index.html", {"request": request, "valve_state": valve, "weather_data": weather_data, "astro_data": astro_data, "moon_image": moon_image, "logs": logs})
 
 def generate_html_redirect_response() -> HTMLResponse:
     html_content = f"""

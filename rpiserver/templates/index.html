@@ -15,11 +15,7 @@ html {
     flex-direction: row;
     gap: 20px;
     align-items: center;
-    background-color: white;
-    color: black;
-    padding: 20px;
     margin-bottom: 50px;
-    box-shadow: 10px 10px slategrey;
 }
 
 #tile-container {
@@ -29,12 +25,15 @@ html {
     gap: 50px;
 }
 
-#status {
-    background-color: white; 
-    color: black; 
-    border: 1px solid lightgrey; 
+.tile {
+    background-color: white;
+    color: black;
+    border: 1px solid slategrey;
     box-shadow: 10px 10px slategrey;
     padding: 20px;
+}
+
+#status {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -45,9 +44,6 @@ html {
     flex-direction: row;
     gap: 20px;
     justify-content: center;
-    background-color: white;
-    padding: 20px;
-    box-shadow: 10px 10px slategrey;
 }
 
 .control-button {
@@ -58,10 +54,6 @@ html {
 }
 
 #current-weather {
-    background-color: white;
-    color: black;
-    padding: 20px;
-    box-shadow: 10px 10px slategrey;
 }
 
 .flex-column {
@@ -78,35 +70,37 @@ html {
 }
 
 #forecast {
-    background-color: white;
-    color: black;
-    padding: 20px;
-    box-shadow: 10px 10px slategrey;
+}
+
+#astronomy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 #log-block {
-    background-color: white;
-    color: black;
-    padding: 20px;
     margin-top: 50px;
-    box-shadow: 10px 10px slategrey;
 }
 </style>
 <body>
-  <div id="header">
+  <div id="header" class="tile">
     <img src="{{ url_for('static', path='poppy_logo.png') }}" />
     <h1>Poppyland Raincloud</h1>
   </div>
   <div id="tile-container">
-    <div id="status">
+    <div id="status" class="tile">
       <h2>Raincloud Status<h2>
       <p style="color: {{ "blue" if valve_state.is_open else "green"}}">{{ "OPEN" if valve_state.is_open else "closed"}}</p>
     </div>
-    <div id="controls">
+    <div id="controls" class="tile">
       <button onclick="location.href='/home/valves/open'" type="button" class="control-button"><h3>OPEN</h3></button>
       <button onclick="location.href='/home/valves/close'" type="button" class="control-button" style="background-color: green;"><h3>CLOSE</h3></button>
     </div>
-    <div id="current-weather">
+    <div id="">
+        
+    </div>
+    <div id="current-weather" class="tile">
       <h2>Current Weather</h2>
       <div class="flex-column">
           <img src="{{ weather_data.current.condition.icon }}" />
@@ -114,7 +108,7 @@ html {
           <p>{{ weather_data.current.temp_f }}°F</p>
       </div>
     </div>
-    <div id="forecast">
+    <div id="forecast" class="tile">
       <h2>Today's Forecast</h2>
       <div class="flex-column">
         <img src="{{ weather_data.forecast.forecastday.0.day.condition.icon }}" />
@@ -123,7 +117,7 @@ html {
         <p>Chance of rain: {{ weather_data.forecast.forecastday.0.day.daily_chance_of_rain }}% ({{ weather_data.forecast.forecastday.0.day.totalprecip_in }} in.)</p>
       </div>
     </div>
-    <div id="forecast">
+    <div id="forecast" class="tile">
       <h2>Tomorrow's Forecast</h2>
       <div class="flex-column">
         <img src="{{ weather_data.forecast.forecastday.1.day.condition.icon }}" />
@@ -132,8 +126,20 @@ html {
         <p>Chance of rain: {{ weather_data.forecast.forecastday.1.day.daily_chance_of_rain }}% ({{ weather_data.forecast.forecastday.1.day.totalprecip_in }} in.)</p>
       </div>
     </div>
+    <div id="astronomy" class="tile">
+        <h2>Moon Phase</h2>
+        <img src="{{ moon_image }}" />
+        <div>{{ astro_data.astronomy.astro.moon_phase }}</div>
+        <div>{{ astro_data.astronomy.astro.moon_illumination }}% illumination</div>
+    </div>
+    <div id="frost" class="tile">
+        <h2>Freeze Temperatures</h2>
+        <div><b>Light freeze:</b> 29° - 32°F</div>
+        <div><b>Moderate freeze:</b> 25° - 28°F</div>
+        <div><b>Severe freeze:</b> 24°F and colder</div>
+    </div>
   </div>
-  <div id="log-block">
+  <div id="log-block" class="tile">
       <h2>Logs</h2>
       {% for log in logs %}
       <p style="padding: 10px;">{{log.datetime}} - {{log.message}}</p>
