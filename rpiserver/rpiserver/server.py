@@ -94,15 +94,15 @@ templates = Jinja2Templates(directory="templates")
 
 @api.get("/")
 def root(request: Request):
-    response = requests.get(f"https://api.weatherapi.com/v1/forecast.json?q=29715&days=1&key=d25c5b1c56f648249a6222139231411")
-    weather_data = response.json().get("current", {})
+    response = requests.get(f"https://api.weatherapi.com/v1/forecast.json?q=29715&days=2&key=d25c5b1c56f648249a6222139231411")
+    weather_data = response.json()
     return templates.TemplateResponse("index.html", {"request": request, "valve_state": valve, "weather_data": weather_data})
 
 def generate_html_redirect_response() -> HTMLResponse:
     html_content = f"""
     <html>
       <head>
-        <meta http-equiv="refresh" content="1; url='/api'" />
+        <meta http-equiv="refresh" content="1; url='/home'" />
       </head>
       <body>
           <p>Processing...</p>

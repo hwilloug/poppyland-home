@@ -1,2 +1,2 @@
 cd rpiserver
-poetry run uvicorn rpiserver.server:api --reload --port 8080 --root-path /api
+poetry run uvicorn rpiserver.server:api --reload --port 8080 --root-path /home

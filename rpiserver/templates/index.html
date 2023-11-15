@@ -15,15 +15,33 @@
       <p style="color: {{ "blue" if valve_state.is_open else "green"}}">{{ "OPEN" if valve_state.is_open else "closed"}}</p>
     </div>
     <div id="controls">
-      <button onclick="location.href='/api/valves/open'" type="button" class="control-button"><h3>OPEN</h3></button>
-      <button onclick="location.href='/api/valves/close'" type="button" class="control-button" style="background-color: green;"><h3>CLOSE</h3></button>
+      <button onclick="location.href='/home/valves/open'" type="button" class="control-button"><h3>OPEN</h3></button>
+      <button onclick="location.href='/home/valves/close'" type="button" class="control-button" style="background-color: green;"><h3>CLOSE</h3></button>
     </div>
-    <div id="weather">
+    <div id="current-weather">
       <h2>Current Weather</h2>
-      <div id="weather-container">
-          <img src="{{ weather_data.condition.icon }}" />
-          <p>{{ weather_data.condition.text }}</p>
-          <p>{{ weather_data.temp_f }}°F</p>
+      <div class="flex-column">
+          <img src="{{ weather_data.current.condition.icon }}" />
+          <p>{{ weather_data.current.condition.text }}</p>
+          <p>{{ weather_data.current.temp_f }}°F</p>
+      </div>
+    </div>
+    <div id="forecast">
+      <h2>Today's Forecast</h2>
+      <div class="flex-column">
+        <img src="{{ weather_data.forecast.forecastday.0.day.condition.icon }}" />
+        <p>{{ weather_data.forecast.forecastday.0.day.condition.text }}</p>
+        <p>Lo: {{ weather_data.forecast.forecastday.0.day.mintemp_f }}°F | High: {{ weather_data.forecast.forecastday.0.day.maxtemp_f }}°F</p>
+        <p>Chance of rain: {{ weather_data.forecast.forecastday.0.day.daily_chance_of_rain }}% ({{ weather_data.forecast.forecastday.0.day.totalprecip_in }} in.)</p>
+      </div>
+    </div>
+    <div id="forecast">
+      <h2>Tomorrow's Forecast</h2>
+      <div class="flex-column">
+        <img src="{{ weather_data.forecast.forecastday.1.day.condition.icon }}" />
+        <p>{{ weather_data.forecast.forecastday.1.day.condition.text }}</p>
+        <p>Lo: {{ weather_data.forecast.forecastday.1.day.mintemp_f }}°F | High: {{ weather_data.forecast.forecastday.1.day.maxtemp_f }}°F</p>
+        <p>Chance of rain: {{ weather_data.forecast.forecastday.1.day.daily_chance_of_rain }}% ({{ weather_data.forecast.forecastday.1.day.totalprecip_in }} in.)</p>
       </div>
     </div>
   </div>

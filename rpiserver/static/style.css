@@ -51,22 +51,29 @@ html {
     border-radius: 50px;
 }
 
-#weather {
+#current-weather {
     background-color: white;
     color: black;
     padding: 20px;
     box-shadow: 10px 10px slategrey;
 }
 
-#weather-container {
+.flex-column {
     display: flex;
     flex-direction: column;
     align-items: center;
     flex-wrap: wrap;
 }
 
-#weather-container p {
+.flex-column p {
     margin: 0px;
     padding: 0px;
     margin-top: 5px;
+}
+
+#forecast {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    box-shadow: 10px 10px slategrey;
 }
