@@ -2,8 +2,96 @@
 <html>
 <head>
   <title>Poppyland Raincloud</title>
-  <link href="{{ url_for('static', path='style.css') }}" rel="stylesheet" />
 </head>
+<style>
+html {
+    background-color: dodgerblue;
+    color: white;
+    padding: 50px;
+}
+
+#header {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    margin-bottom: 50px;
+    box-shadow: 10px 10px slategrey;
+}
+
+#tile-container {
+    display: flex; 
+    flex-direction: row; 
+    flex-wrap: wrap;
+    gap: 50px;
+}
+
+#status {
+    background-color: white; 
+    color: black; 
+    border: 1px solid lightgrey; 
+    box-shadow: 10px 10px slategrey;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#controls {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 10px 10px slategrey;
+}
+
+.control-button {
+    padding: 50px; 
+    background-color: blue; 
+    color: white;
+    border-radius: 50px;
+}
+
+#current-weather {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    box-shadow: 10px 10px slategrey;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.flex-column p {
+    margin: 0px;
+    padding: 0px;
+    margin-top: 5px;
+}
+
+#forecast {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    box-shadow: 10px 10px slategrey;
+}
+
+#log-block {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    margin-top: 50px;
+    box-shadow: 10px 10px slategrey;
+}
+</style>
 <body>
   <div id="header">
     <img src="{{ url_for('static', path='poppy_logo.png') }}" />
@@ -44,6 +132,13 @@
         <p>Chance of rain: {{ weather_data.forecast.forecastday.1.day.daily_chance_of_rain }}% ({{ weather_data.forecast.forecastday.1.day.totalprecip_in }} in.)</p>
       </div>
     </div>
+  </div>
+  <div id="log-block">
+      <h2>Logs</h2>
+      {% for log in logs %}
+      <p style="padding: 10px;">{{log.datetime}} - {{log.message}}</p>
+      <hr />
+      {% endfor %}
   </div>
  </body>
 </html>

@@ -6,6 +6,7 @@ from pydantic import BaseModel
 import RPi.GPIO as GPIO
 from datetime import datetime
 from fastapi.templating import Jinja2Templates
+import csv
 
 
 GPIO.setmode(GPIO.BCM)
@@ -23,13 +24,13 @@ class Valve(BaseModel):
         return self
     
     def open(self):
-        print(f"Opening valve {self.gpio}")
+        write_log(f"Opening valve {self.gpio}")
         GPIO.output(self.gpio, GPIO.HIGH)
         self.is_open = True
         self.last_changed = datetime.now()
         
     def close(self):
-        print(f"Closing valve {self.gpio}")
+        write_log(f"Closing valve {self.gpio}")
         GPIO.output(self.gpio, GPIO.LOW)
         self.is_open = False
         self.last_changed = datetime.now()
@@ -96,7 +97,8 @@ templates = Jinja2Templates(directory="templates")
 def root(request: Request):
     response = requests.get(f"https://api.weatherapi.com/v1/forecast.json?q=29715&days=2&key=d25c5b1c56f648249a6222139231411")
     weather_data = response.json()
-    return templates.TemplateResponse("index.html", {"request": request, "valve_state": valve, "weather_data": weather_data})
+    logs = get_logs()
+    return templates.TemplateResponse("index.html", {"request": request, "valve_state": valve, "weather_data": weather_data, "logs": logs})
 
 def generate_html_redirect_response() -> HTMLResponse:
     html_content = f"""
@@ -110,3 +112,20 @@ def generate_html_redirect_response() -> HTMLResponse:
     </html>
     """
     return HTMLResponse(content=html_content, status_code=200)
+
+def write_log(message: str) -> None:
+    with open('log.csv', 'a', newline='') as csvfile:
+        writer =csv.writer(csvfile, delimiter=",")
+        writer.writerow([datetime.now(), message])
+
+def get_logs() -> list({"datetime": str, "message": str}):
+    with open('log.csv', newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        logs = []
+        for row in reader:
+            logs.append({
+                "datetime": row[0],
+                "message": row[1]
+            })
+        logs.reverse()
+        return logs
