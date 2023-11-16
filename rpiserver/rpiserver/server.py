@@ -24,13 +24,13 @@ class Valve(BaseModel):
         return self
     
     def open(self):
-        write_log(f"Opening valve {self.gpio}")
+        print(f"Opening valve {self.gpio}")
         GPIO.output(self.gpio, GPIO.HIGH)
         self.is_open = True
         self.last_changed = datetime.now()
         
     def close(self):
-        write_log(f"Closing valve {self.gpio}")
+        print(f"Closing valve {self.gpio}")
         GPIO.output(self.gpio, GPIO.LOW)
         self.is_open = False
         self.last_changed = datetime.now()
@@ -56,12 +56,13 @@ class LED(BaseModel):
         self.is_on = False
         
     
-valve = Valve(gpio=17).init()
+valve = Valve(gpio=18).init()
 led1 = LED(gpio=22).init()
 led2 = LED(gpio=27).init()
 
 api = FastAPI()
 api.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 @api.on_event("startup")
 def startup():
@@ -70,6 +71,7 @@ def startup():
     led1.on()
     led2.off()
 
+
 @api.on_event("shutdown")
 def shutdown():
     write_log("Shutting down...")
@@ -77,23 +79,30 @@ def shutdown():
     led1.off()
     led2.off()
     
+    
 @api.get("/valves/status")
 def valve_status():
     return {"is_open": valve.is_open}
 
+
 @api.get("/valves/open")
 def open_valve():
+    write_log(f"Opening valve {valve.gpio}")
     valve.open()
     led2.on()
     return generate_html_redirect_response()
 
+
 @api.get("/valves/close")
 def close_valve():
+    write_log(f"Closing valve {valve.gpio}")
     valve.close()
     led2.off()
     return generate_html_redirect_response()
 
+
 templates = Jinja2Templates(directory="templates")
+
 
 @api.get("/")
 def root(request: Request):
@@ -135,6 +144,7 @@ def root(request: Request):
         "logs": logs
     })
 
+
 def generate_html_redirect_response() -> HTMLResponse:
     html_content = f"""
     <html>
@@ -148,10 +158,12 @@ def generate_html_redirect_response() -> HTMLResponse:
     """
     return HTMLResponse(content=html_content, status_code=200)
 
+
 def write_log(message: str) -> None:
     with open('log.csv', 'a', newline='') as csvfile:
         writer =csv.writer(csvfile, delimiter=",")
         writer.writerow([datetime.now(), message])
+
 
 def get_logs() -> list({"datetime": datetime, "message": str}):
     with open('log.csv', newline='') as csvfile:

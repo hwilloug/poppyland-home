@@ -10,6 +10,11 @@ html {
     padding: 50px;
 }
 
+body {
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
 #header {
     display: flex;
     flex-direction: row;
@@ -23,6 +28,7 @@ html {
     flex-direction: row; 
     flex-wrap: wrap;
     gap: 50px;
+    justify-content: space-evenly;
 }
 
 .tile {
@@ -30,7 +36,7 @@ html {
     color: black;
     border: 1px solid slategrey;
     box-shadow: 10px 10px slategrey;
-    padding: 20px;
+    padding: 20px 50px;
 }
 
 #status {
@@ -53,6 +59,7 @@ html {
     flex-direction: row;
     gap: 20px;
     justify-content: center;
+    padding: 10px;
 }
 
 .control-button {
@@ -96,6 +103,7 @@ html {
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    padding: 20px 100px;
 }
 
 #log-block {
@@ -126,10 +134,10 @@ html {
     </div>
     <div id="controls" class="tile">
       <button onclick="location.href='/home/valves/open'" type="button" class="control-button"><h3>OPEN</h3></button>
-      <button onclick="location.href='/home/valves/close'" type="button" class="control-button" style="background-color: green;"><h3>CLOSE</h3></button>
+      <button onclick="location.href='/home/valves/close'" type="button" class="control-button" style="background-color: orange; color: black;"><h3>CLOSE</h3></button>
     </div>
     <div id="status_time" class="tile">
-        <h2>Time in current status</h2>
+        <h2>Time {{"open" if valve_state.is_open else "closed"}}:</h2>
         <table id="status-time-table">
             <tr>
                 <td>{{ time_in_state.hours }}</td>
@@ -189,6 +197,9 @@ html {
         <img src="{{ moon_image }}" />
         <div>{{ astro_data.astronomy.astro.moon_phase }}</div>
         <div>{{ astro_data.astronomy.astro.moon_illumination }}% illumination</div>
+    </div>
+    <div id="" class="tile">
+        <h2></h2>
     </div>
   </div>
   <div id="log-block" class="tile">
