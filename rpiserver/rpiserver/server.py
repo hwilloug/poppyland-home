@@ -141,7 +141,8 @@ def root(request: Request):
         "weather_data": weather_data,
         "astro_data": astro_data,
         "moon_image": moon_image,
-        "logs": logs
+        "logs": logs,
+        "today": datetime.now()
     })
 
 

@@ -121,6 +121,21 @@ body {
 #log-block tr:nth-child(even) {
     background-color: lightgrey;
 }
+
+#todays-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.today {
+    margin: 0;
+}
+
+#today-day {
+    font-size: 75px;
+}
 </style>
 <body>
   <div id="header" class="tile">
@@ -128,6 +143,11 @@ body {
     <h1>Poppyland Raincloud</h1>
   </div>
   <div id="tile-container">
+    <div id="todays-date" class="tile">
+        <h2 id="today-dayofweek" class="today">{{ today.strftime("%A") }}</h2>
+        <h2 id="today-month" class="today">{{ today.strftime("%B") }}</h2>
+        <h1 id="today-day" class="today">{{ today.strftime("%d") }}</h1>
+    </div>
     <div id="status" class="tile">
       <h2>Raincloud Status</h2>
       <img src="{{ "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f327.svg" if valve_state.is_open else "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f324.svg" }}" />
@@ -197,9 +217,6 @@ body {
         <img src="{{ moon_image }}" />
         <div>{{ astro_data.astronomy.astro.moon_phase }}</div>
         <div>{{ astro_data.astronomy.astro.moon_illumination }}% illumination</div>
-    </div>
-    <div id="" class="tile">
-        <h2></h2>
     </div>
   </div>
   <div id="log-block" class="tile">
