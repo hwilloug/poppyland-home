@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Poppyland Sunset</title>
+</head>
+<style>
+html {
+    background-color: gold;
+    padding: 50px;
+}
+
+body {
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+#header {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+#tile-container {
+}
+
+.tile {
+    background-color: white;
+    color: black;
+    border: 1px solid hotpink;
+    box-shadow: 10px 10px hotpink;
+    padding: 20px 50px;
+}
+
+.room {
+    margin-bottom: 25px;
+}
+
+</style>
+<body>
+    <div id="header" class="tile">
+        <a href="/"><img src="{{ url_for('static', path='poppy_logo.png') }}" /></a>
+        <h1>Poppyland Sunset</h1>
+    </div>
+    <div class="tile room">
+        <h2>Master Switch</h2>
+        <a href="/sunset/off"><button>OFF</button></a>
+        <a href="/sunset/on"><button>ON</button></a>
+    </div>
+    <div class="tile room">
+        <h2>Living Room</h2>
+    </div>
+    <div class="tile room">
+        <h2>Hobby Room</h2>
+    </div>
+    <div class="tile room">
+        <h2>Bedroom</h2>
+    </div>
+</body>

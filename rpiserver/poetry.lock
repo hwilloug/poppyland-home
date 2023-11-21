@@ -700,6 +700,20 @@ files = [
 dev = ["atomicwrites (==1.2.1)", "attrs (==19.2.0)", "coverage (==6.5.0)", "hatch", "invoke (==1.7.3)", "more-itertools (==4.3.0)", "pbr (==4.3.0)", "pluggy (==1.0.0)", "py (==1.11.0)", "pytest (==7.2.0)", "pytest-cov (==4.0.0)", "pytest-timeout (==2.1.0)", "pyyaml (==5.1)"]
 
 [[package]]
+name = "pywizlight"
+version = "0.5.14"
+description = "A python connector for WiZ light bulbs (e.g SLV Play)"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pywizlight-0.5.14-py3-none-any.whl", hash = "sha256:dbcb271ae62e09539ea9bc20d0969dd99a12c30bdf6b3e05a6b42b97654221d3"},
+    {file = "pywizlight-0.5.14.tar.gz", hash = "sha256:566423ee1c32b8807b9c1aa18c8b42c0e00a4bc173219215aad7856888e05011"},
+]
+
+[package.dependencies]
+click = "*"
+
+[[package]]
 name = "pyyaml"
 version = "6.0.1"
 description = "YAML parser and emitter for Python"
@@ -1159,4 +1173,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e04590495a49d98a38906c8bb867e40be13c2bbbc22b7e9d97f2ac268acf9511"
+content-hash = "3fffd263b259a79aa72525f160c0afff11b3bdbf8f20a39ce6dee023f1b0fe87"
