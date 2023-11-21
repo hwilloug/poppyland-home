@@ -153,8 +153,8 @@ body {
       <img src="{{ "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f327.svg" if valve_state.is_open else "https://images.emojiterra.com/google/noto-emoji/unicode-15/color/svg/1f324.svg" }}" />
     </div>
     <div id="controls" class="tile">
-      <button onclick="location.href='/home/valves/open'" type="button" class="control-button"><h3>OPEN</h3></button>
-      <button onclick="location.href='/home/valves/close'" type="button" class="control-button" style="background-color: orange; color: black;"><h3>CLOSE</h3></button>
+      <button onclick="location.href='/raincloud/open'" type="button" class="control-button"><h3>OPEN</h3></button>
+      <button onclick="location.href='/raincloud/close'" type="button" class="control-button" style="background-color: orange; color: black;"><h3>CLOSE</h3></button>
     </div>
     <div id="status_time" class="tile">
         <h2>Time {{"open" if valve_state.is_open else "closed"}}:</h2>

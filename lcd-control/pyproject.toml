@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "lcd-control"
+version = "0.1.0"
+description = ""
+authors = ["Hannah Willoughby <hannah@hannahwilloughby.dev>"]
+readme = "README.md"
+packages = [{include = "lcd_control"}]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+rpi-lcd = "^0.0.3"
+rpi-gpio = "^0.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

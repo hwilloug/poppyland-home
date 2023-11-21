@@ -1,7 +1,6 @@
 from starlette.responses import HTMLResponse
-from fastapi import FastAPI, Request
+from fastapi import APIRouter, Request
 import requests
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import RPi.GPIO as GPIO
 from datetime import datetime
@@ -9,9 +8,10 @@ from fastapi.templating import Jinja2Templates
 import csv
 
 
+router = APIRouter()
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-
 
 class Valve(BaseModel):
     gpio: int
@@ -54,17 +54,12 @@ class LED(BaseModel):
         print(f"Turning off LED {self.gpio}")
         GPIO.output(self.gpio, GPIO.LOW)
         self.is_on = False
-        
     
 valve = Valve(gpio=18).init()
 led1 = LED(gpio=22).init()
 led2 = LED(gpio=27).init()
 
-api = FastAPI()
-api.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-@api.on_event("startup")
+@router.on_event("startup")
 def startup():
     write_log("Starting up...")
     valve.close()
@@ -72,7 +67,7 @@ def startup():
     led2.off()
 
 
-@api.on_event("shutdown")
+@router.on_event("shutdown")
 def shutdown():
     write_log("Shutting down...")
     valve.close()
@@ -80,31 +75,33 @@ def shutdown():
     led2.off()
     
     
-@api.get("/valves/status")
+@router.get("/raincloud/status")
 def valve_status():
     return {"is_open": valve.is_open}
 
 
-@api.get("/valves/open")
+@router.get("/raincloud/open")
 def open_valve():
-    write_log(f"Opening valve {valve.gpio}")
-    valve.open()
-    led2.on()
+    if not valve.is_open:
+        write_log(f"Opening valve {valve.gpio}")
+        valve.open()
+        led2.on()
     return generate_html_redirect_response()
 
 
-@api.get("/valves/close")
+@router.get("/raincloud/close")
 def close_valve():
-    write_log(f"Closing valve {valve.gpio}")
-    valve.close()
-    led2.off()
+    if valve.is_open:
+        write_log(f"Closing valve {valve.gpio}")
+        valve.close()
+        led2.off()
     return generate_html_redirect_response()
 
 
 templates = Jinja2Templates(directory="templates")
 
 
-@api.get("/")
+@router.get("/raincloud")
 def root(request: Request):
     response = requests.get(f"https://api.weatherapi.com/v1/forecast.json?q=29715&days=2&key=d25c5b1c56f648249a6222139231411")
     weather_data = response.json()
@@ -134,7 +131,7 @@ def root(request: Request):
             "minutes": time_in_state_split[1],
             "seconds": time_in_state_split[2].split('.')[0]
         }
-    return templates.TemplateResponse("index.html", {
+    return templates.TemplateResponse("raincloud_index.html", {
         "request": request,
         "valve_state": valve,
         "time_in_state": time_in_state,
@@ -150,7 +147,7 @@ def generate_html_redirect_response() -> HTMLResponse:
     html_content = f"""
     <html>
       <head>
-        <meta http-equiv="refresh" content="1; url='/home'" />
+        <meta http-equiv="refresh" content="1; url='/raincloud'" />
       </head>
       <body>
           <p>Processing...</p>
