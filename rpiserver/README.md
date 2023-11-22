@@ -6,7 +6,6 @@
 
 ```
 poetry install
-
 ```
 
 ### Nginx Install and Configuration
